@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name" translatable="false">KoloMITM</string>
+    <string name="kolo_mitm" translatable="false">Kolo MITM</string>
+    <string name="kolo_mitm_running">Capturing game packets...</string>
+    <string name="stop">Stop</string>
+    <string name="home">Home</string>
+    <string name="extensions">Extensions</string>
+    <string name="accounts">Accounts</string>
+    <string name="settings">Settings</string>
 </resources>

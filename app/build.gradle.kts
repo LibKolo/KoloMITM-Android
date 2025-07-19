@@ -38,12 +38,16 @@ android {
     }
 
     packaging {
-        resources.excludes += setOf("DebugProbesKt.bin")
+        resources.excludes += setOf("DebugProbesKt.bin", "log4j2.xml")
         resources.merges += setOf(
             "META-INF/INDEX.LIST",
             "META-INF/io.netty.versions.properties",
             "META-INF/DEPENDENCIES"
         )
+    }
+
+    viewBinding {
+        enable = true
     }
 }
 
@@ -54,6 +58,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

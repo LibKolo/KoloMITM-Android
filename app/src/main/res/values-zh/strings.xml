@@ -1,2 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="kolo_mitm_running">捕获游戏数据包中...</string>
+    <string name="stop">停止</string>
+    <string name="home">主页</string>
+    <string name="extensions">扩展</string>
+    <string name="accounts">账户</string>
+    <string name="settings">设置</string>
+</resources>

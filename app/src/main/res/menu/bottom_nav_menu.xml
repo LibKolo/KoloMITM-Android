@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/home"
+        android:icon="@drawable/home_24px"
+        android:title="@string/home" />
+
+    <item
+        android:id="@+id/extensions"
+        android:icon="@drawable/extension_24px"
+        android:title="@string/extensions" />
+
+    <item
+        android:id="@+id/accounts"
+        android:icon="@drawable/account_circle_24px"
+        android:title="@string/accounts" />
+
+    <item
+        android:id="@+id/settings"
+        android:icon="@drawable/settings_24px"
+        android:title="@string/settings" />
+
+</menu>
