@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.google.android.material.divider.MaterialDividerItemDecoration
+import io.githun.mucute.qwq.kolomitm.adapter.AccountAdapter
 import io.githun.mucute.qwq.kolomitm.databinding.FragmentAccountsBinding
 
 class AccountsFragment : Fragment() {
@@ -22,6 +24,14 @@ class AccountsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewBinding.recyclerView.addItemDecoration(
+            MaterialDividerItemDecoration(
+                requireContext(),
+                MaterialDividerItemDecoration.VERTICAL
+            ).also { it.isLastItemDecorated = false }
+        )
+        viewBinding.recyclerView.adapter = AccountAdapter(requireContext())
+
     }
 
 }

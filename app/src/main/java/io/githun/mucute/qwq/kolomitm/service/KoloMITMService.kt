@@ -1,10 +1,14 @@
 package io.githun.mucute.qwq.kolomitm.service
 
+import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
+import android.net.wifi.WifiManager
+import android.os.Build
 import android.os.IBinder
+import android.os.PowerManager
 import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -15,6 +19,7 @@ import io.github.mucute.qwq.kolomitm.event.receiver.proxyPassReceiver
 import io.github.mucute.qwq.kolomitm.event.receiver.transferCommandReceiver
 import io.github.mucute.qwq.kolomitm.event.receiver.transferReceiver
 import io.githun.mucute.qwq.kolomitm.R
+import io.githun.mucute.qwq.kolomitm.activity.MainActivity
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -29,6 +34,10 @@ class KoloMITMService : Service() {
         CoroutineScope(Dispatchers.IO + CoroutineName("KoloMITMCoroutine") + SupervisorJob())
 
     private var koloMITM: KoloMITM? = null
+
+    private var wakeLock: PowerManager.WakeLock? = null
+
+    private var wifiLock: WifiManager.WifiLock? = null
 
     override fun onBind(intent: Intent?): IBinder? {
         return null
@@ -78,19 +87,32 @@ class KoloMITMService : Service() {
             .setContentText(getString(R.string.kolo_mitm_running))
             .setSmallIcon(R.mipmap.ic_launcher)
             .setOngoing(true)
+            .setContentIntent(createPendingIntent())
             .addAction(
                 android.R.drawable.ic_menu_close_clear_cancel,
                 getString(R.string.stop),
-                createPendingIntent()
+                createStopPendingIntent()
             )
             .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
             .build()
     }
 
     private fun createPendingIntent(): PendingIntent {
-        return PendingIntent.getService(
+        return PendingIntent.getActivity(
             this,
             0,
+            Intent(this, MainActivity::class.java).apply {
+                addCategory(Intent.CATEGORY_LAUNCHER)
+                action = Intent.ACTION_MAIN
+            },
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
+    }
+
+    private fun createStopPendingIntent(): PendingIntent {
+        return PendingIntent.getForegroundService(
+            this,
+            1,
             Intent(ACTION_STOP).also { it.`package` = packageName },
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
@@ -101,6 +123,7 @@ class KoloMITMService : Service() {
             return
         }
 
+        acquireWakeLock()
         coroutineScope.launch {
             koloMITM = KoloMITM().apply {
                 account = null
@@ -123,6 +146,7 @@ class KoloMITMService : Service() {
             return
         }
 
+        releaseWakeLock()
         coroutineScope.launch {
             koloMITM?.let {
                 it.serverChannel?.close()?.syncUninterruptibly()
@@ -132,6 +156,45 @@ class KoloMITMService : Service() {
         }
 
         _activeFlow.value = false
+    }
+
+    @Suppress("DEPRECATION")
+    @SuppressLint("WakelockTimeout")
+    private fun acquireWakeLock() {
+        if (wakeLock != null) {
+            return
+        }
+
+        val powerManager = getSystemService(POWER_SERVICE) as PowerManager
+        wakeLock = powerManager.newWakeLock(
+            PowerManager.PARTIAL_WAKE_LOCK,
+            "${packageName.lowercase()}:service-wakelock"
+        ).also { it.acquire() }
+
+        val wifiManager = getSystemService(WIFI_SERVICE) as WifiManager
+        wifiLock = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            wifiManager.createWifiLock(
+                WifiManager.WIFI_MODE_FULL_LOW_LATENCY,
+                packageName.lowercase()
+            )
+        } else {
+            wifiManager.createWifiLock(
+                WifiManager.WIFI_MODE_FULL_HIGH_PERF,
+                packageName.lowercase()
+            )
+        }.also { it.acquire() }
+    }
+
+    private fun releaseWakeLock() {
+        if (wakeLock == null && wifiLock == null) {
+            return
+        }
+
+        wakeLock?.release()
+        wakeLock = null
+
+        wifiLock?.release()
+        wifiLock = null
     }
 
     companion object {

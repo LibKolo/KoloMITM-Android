@@ -27,7 +27,6 @@ class MainActivity : BaseActivity() {
         setContentView(viewBinding.root)
         applyWindowInsets(viewBinding.root)
 
-        val materialToolbar = viewBinding.materialToolbar
         val viewPager2 = viewBinding.viewPager2
         val bottomNavigationView = viewBinding.bottomNavigationView
 
