@@ -1,6 +1,7 @@
 package io.githun.mucute.qwq.kolomitm.application
 
 import android.app.Application
+import io.githun.mucute.qwq.kolomitm.manager.AccountManager
 
 class AppContext : Application() {
 
@@ -14,6 +15,8 @@ class AppContext : Application() {
     override fun onCreate() {
         super.onCreate()
         instance = this
+
+        AccountManager.fetchAccounts()
     }
 
 }

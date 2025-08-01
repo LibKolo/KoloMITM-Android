@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="device_types">
+        <item>@string/android_device</item>
+        <item>@string/ios_device</item>
+        <item>@string/nintendo_device</item>
+    </string-array>
+
+</resources>

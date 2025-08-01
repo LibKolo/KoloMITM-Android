@@ -1,17 +1,43 @@
 package io.githun.mucute.qwq.kolomitm.fragment.main
 
+import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
+import android.webkit.WebChromeClient
+import android.webkit.WebResourceRequest
+import android.webkit.WebSettings
+import android.webkit.WebView
+import android.webkit.WebViewClient
+import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.divider.MaterialDividerItemDecoration
+import com.google.android.material.progressindicator.LinearProgressIndicator
+import io.githun.mucute.qwq.kolomitm.R
+import io.githun.mucute.qwq.kolomitm.activity.AuthActivity
 import io.githun.mucute.qwq.kolomitm.adapter.AccountAdapter
 import io.githun.mucute.qwq.kolomitm.databinding.FragmentAccountsBinding
+import io.githun.mucute.qwq.kolomitm.manager.AccountManager
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
+import net.raphimc.minecraftauth.step.msa.StepMsaDeviceCode
 
 class AccountsFragment : Fragment() {
 
     private lateinit var viewBinding: FragmentAccountsBinding
+
+    private val adapter by lazy { AccountAdapter(requireContext()) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -24,14 +50,79 @@ class AccountsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewBinding.recyclerView.addItemDecoration(
-            MaterialDividerItemDecoration(
-                requireContext(),
-                MaterialDividerItemDecoration.VERTICAL
-            ).also { it.isLastItemDecorated = false }
-        )
-        viewBinding.recyclerView.adapter = AccountAdapter(requireContext())
 
+        viewBinding.recyclerView.adapter = adapter
+        viewBinding.floatingActionButton.setOnClickListener {
+            showDeviceTypeChoicesDialog()
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                AccountManager.accounts
+                    .onEach { afterAccounts ->
+                        val beforeAccounts = adapter.accounts
+                        val differ = afterAccounts.minus(beforeAccounts)
+                        if (differ.isEmpty()) {
+                            return@onEach
+                        }
+
+                        adapter.accounts = afterAccounts
+                        if (!beforeAccounts.containsAll(differ)) {
+                            adapter.notifyItemRangeInserted(beforeAccounts.size, differ.size)
+
+                        } else {
+                            val index = beforeAccounts.indexOf(differ.first())
+                            adapter.notifyItemRangeRemoved(index, differ.size)
+                        }
+
+                    }
+                    .launchIn(this)
+
+                AccountManager.selectedAccount
+                    .onEach { afterSelectedAccount ->
+                        val beforeSelectedAccount = adapter.selectedAccount
+
+                        adapter.selectedAccount = afterSelectedAccount
+                        if (beforeSelectedAccount == null) {
+                            val currentIndex = adapter.accounts.indexOf(afterSelectedAccount).takeIf { it >= 0 } ?: return@onEach
+                            adapter.notifyItemChanged(currentIndex)
+                            return@onEach
+                        }
+
+                        if (afterSelectedAccount == null) {
+                            val currentIndex = adapter.accounts.indexOf(beforeSelectedAccount).takeIf { it >= 0 } ?: return@onEach
+                            adapter.notifyItemChanged(currentIndex)
+                            return@onEach
+                        }
+
+                        val beforeIndex = adapter.accounts.indexOf(beforeSelectedAccount).takeIf { it >= 0 } ?: return@onEach
+                        val currentIndex = adapter.accounts.indexOf(afterSelectedAccount).takeIf { it >= 0 } ?: return@onEach
+
+                        adapter.notifyItemChanged(beforeIndex)
+                        adapter.notifyItemChanged(currentIndex)
+                    }
+                    .launchIn(this)
+            }
+        }
+    }
+
+    private fun showDeviceTypeChoicesDialog() {
+        var deviceType = 0
+
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.device_type)
+            .setSingleChoiceItems(
+                R.array.device_types,
+                0
+            ) { _, which ->
+                deviceType = which
+            }
+            .setPositiveButton(R.string.confirm) { _, _ ->
+                startActivity(Intent(requireContext(), AuthActivity::class.java).apply {
+                    putExtra("deviceType", deviceType)
+                })
+            }
+            .show()
     }
 
 }

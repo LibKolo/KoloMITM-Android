@@ -19,7 +19,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.KoloMITM"
-        tools:targetApi="33">
+        tools:targetApi="33"
+        android:networkSecurityConfig="@xml/network_security_config">
 
         <activity
             android:name=".activity.MainActivity"
@@ -31,6 +32,8 @@
             </intent-filter>
 
         </activity>
+
+        <activity android:name=".activity.AuthActivity" />
 
         <service
             android:name=".service.KoloMITMService"

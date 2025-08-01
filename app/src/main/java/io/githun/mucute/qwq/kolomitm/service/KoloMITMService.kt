@@ -20,6 +20,11 @@ import io.github.mucute.qwq.kolomitm.event.receiver.transferCommandReceiver
 import io.github.mucute.qwq.kolomitm.event.receiver.transferReceiver
 import io.githun.mucute.qwq.kolomitm.R
 import io.githun.mucute.qwq.kolomitm.activity.MainActivity
+import io.githun.mucute.qwq.kolomitm.manager.AccountManager
+import io.githun.mucute.qwq.kolomitm.model.Account
+import io.githun.mucute.qwq.kolomitm.util.BedrockAndroidAuth
+import io.githun.mucute.qwq.kolomitm.util.BedrockIosAuth
+import io.githun.mucute.qwq.kolomitm.util.BedrockNintendoAuth
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -27,6 +32,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import net.raphimc.minecraftauth.MinecraftAuth
 
 class KoloMITMService : Service() {
 
@@ -126,7 +132,17 @@ class KoloMITMService : Service() {
         acquireWakeLock()
         coroutineScope.launch {
             koloMITM = KoloMITM().apply {
-                account = null
+                account = AccountManager.selectedAccount.value?.let {
+                    if (it.session.isExpired) {
+                        when (it.deviceType) {
+                            Account.Android -> BedrockAndroidAuth
+                            Account.iOS -> BedrockIosAuth
+                            else -> BedrockNintendoAuth
+                        }.refresh(MinecraftAuth.createHttpClient(), it.session)
+                    } else {
+                        it.session
+                    }
+                }
                 koloSession.apply {
                     proxyPassReceiver()
                     definitionReceiver()

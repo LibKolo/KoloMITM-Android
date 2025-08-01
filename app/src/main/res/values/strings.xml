@@ -1,10 +1,19 @@
 <resources>
-    <string name="app_name" translatable="false">KoloMITM</string>
+    <string name="app_name" translatable="false">Kolo MITM</string>
     <string name="kolo_mitm" translatable="false">Kolo MITM</string>
-    <string name="kolo_mitm_running">Capturing game packets...</string>
+    <string name="kolo_mitm_running">Capturing game packets…</string>
     <string name="stop">Stop</string>
     <string name="home">Home</string>
     <string name="extensions">Extensions</string>
     <string name="accounts">Accounts</string>
     <string name="settings">Settings</string>
+    <string name="cancel">Cancel</string>
+    <string name="add_account">Add Account</string>
+    <string name="device_type">Device Type</string>
+    <string name="android_device" translatable="false">Android</string>
+    <string name="ios_device" translatable="false">iOS</string>
+    <string name="nintendo_device" translatable="false">Nintendo</string>
+    <string name="confirm">Confirm</string>
+    <string name="encounter_an_exception">Encounter an exception: %s</string>
+    <string name="account_selected">(Selected)</string>
 </resources>

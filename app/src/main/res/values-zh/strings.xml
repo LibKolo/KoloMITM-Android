@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="kolo_mitm_running">捕获游戏数据包中...</string>
+    <string name="kolo_mitm_running">捕获游戏数据包中…</string>
     <string name="stop">停止</string>
     <string name="home">主页</string>
     <string name="extensions">扩展</string>
     <string name="accounts">账户</string>
     <string name="settings">设置</string>
+    <string name="cancel">取消</string>
+    <string name="add_account">添加账户</string>
+    <string name="device_type">设备类型</string>
+    <string name="confirm">确认</string>
+    <string name="encounter_an_exception">遇到一个异常：%s</string>
+    <string name="account_selected">(已选择)</string>
 </resources>
