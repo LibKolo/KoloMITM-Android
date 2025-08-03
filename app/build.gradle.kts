@@ -38,7 +38,7 @@ android {
     }
 
     packaging {
-        resources.excludes += setOf("DebugProbesKt.bin", "log4j2.xml")
+        resources.excludes += setOf("DebugProbesKt.bin")
         resources.merges += setOf(
             "META-INF/INDEX.LIST",
             "META-INF/io.netty.versions.properties",

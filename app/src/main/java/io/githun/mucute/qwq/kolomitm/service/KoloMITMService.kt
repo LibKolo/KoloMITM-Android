@@ -13,6 +13,7 @@ import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import io.github.mucute.qwq.kolomitm.KoloMITM
+import io.github.mucute.qwq.kolomitm.definition.Definitions
 import io.github.mucute.qwq.kolomitm.event.receiver.definitionReceiver
 import io.github.mucute.qwq.kolomitm.event.receiver.echoCommandReceiver
 import io.github.mucute.qwq.kolomitm.event.receiver.proxyPassReceiver
@@ -131,6 +132,7 @@ class KoloMITMService : Service() {
 
         acquireWakeLock()
         coroutineScope.launch {
+            Definitions.loadBlockPalette()
             koloMITM = KoloMITM().apply {
                 account = AccountManager.selectedAccount.value?.let {
                     if (it.session.isExpired) {
