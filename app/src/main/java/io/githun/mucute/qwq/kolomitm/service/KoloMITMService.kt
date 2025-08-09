@@ -26,12 +26,14 @@ import io.githun.mucute.qwq.kolomitm.model.Account
 import io.githun.mucute.qwq.kolomitm.util.BedrockAndroidAuth
 import io.githun.mucute.qwq.kolomitm.util.BedrockIosAuth
 import io.githun.mucute.qwq.kolomitm.util.BedrockNintendoAuth
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import net.raphimc.minecraftauth.MinecraftAuth
 
@@ -71,7 +73,9 @@ class KoloMITMService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        when (intent?.action) {
+        intent ?: return START_NOT_STICKY
+
+        when (intent.action) {
 
             ACTION_START -> {
                 startForeground(NOTIFICATION_ID, createNotification())
@@ -85,7 +89,7 @@ class KoloMITMService : Service() {
             }
 
         }
-        return START_NOT_STICKY
+        return super.onStartCommand(intent, flags, startId)
     }
 
     private fun createNotification(): Notification {
@@ -126,12 +130,17 @@ class KoloMITMService : Service() {
     }
 
     private fun startKoloMITM() {
-        if (koloMITM != null) {
-            return
-        }
-
         acquireWakeLock()
-        coroutineScope.launch {
+        coroutineScope.launch(CoroutineExceptionHandler { _, throwable ->
+            throwable.printStackTrace()
+            _stateFlow.update { State.Inactive }
+        }) {
+            if (koloMITM != null) {
+                return@launch
+            }
+
+            _stateFlow.update { State.Loading }
+
             Definitions.loadBlockPalette()
             koloMITM = KoloMITM().apply {
                 account = AccountManager.selectedAccount.value?.let {
@@ -153,27 +162,30 @@ class KoloMITMService : Service() {
                     echoCommandReceiver()
                 }
                 bootServer()
+                _stateFlow.update { State.Active }
             }
         }
-
-        _activeFlow.value = true
     }
 
     private fun stopKoloMITM() {
-        if (koloMITM == null) {
-            return
-        }
-
         releaseWakeLock()
-        coroutineScope.launch {
+        coroutineScope.launch(CoroutineExceptionHandler { _, throwable ->
+            throwable.printStackTrace()
+            _stateFlow.update { State.Active }
+        }) {
+            if (koloMITM == null) {
+                return@launch
+            }
+
+            _stateFlow.update { State.Loading }
+
             koloMITM?.let {
                 it.serverChannel?.close()?.syncUninterruptibly()
                 it.clientChannel?.close()?.syncUninterruptibly()
             }
             koloMITM = null
+            _stateFlow.update { State.Inactive }
         }
-
-        _activeFlow.value = false
     }
 
     @Suppress("DEPRECATION")
@@ -215,6 +227,12 @@ class KoloMITMService : Service() {
         wifiLock = null
     }
 
+    enum class State {
+
+        Active, Inactive, Loading
+
+    }
+
     companion object {
 
         private const val NOTIFICATION_CHANNEL_ID = "kolomitm_channel"
@@ -225,9 +243,9 @@ class KoloMITMService : Service() {
 
         const val ACTION_STOP = "io.githun.mucute.qwq.kolomitm.service.KoloMITMService.stop"
 
-        private val _activeFlow = MutableStateFlow(false)
+        private val _stateFlow = MutableStateFlow(State.Inactive)
 
-        var activeFlow = _activeFlow.asStateFlow()
+        var stateFlow = _stateFlow.asStateFlow()
             private set
 
     }

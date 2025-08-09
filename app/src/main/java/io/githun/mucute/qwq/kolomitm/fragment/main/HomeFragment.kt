@@ -50,12 +50,24 @@ class HomeFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                KoloMITMService.activeFlow.collect { isActive ->
-                    if (isActive) {
-                        floatingActionButton.setImageResource(R.drawable.pause_24px)
+                KoloMITMService.stateFlow.collect { state ->
+                    if (state !== KoloMITMService.State.Loading) {
+                        viewBinding.linearProgressIndicator.visibility = View.GONE
+                        viewBinding.floatingActionButton.isClickable = true
+                        viewBinding.floatingActionButton.isFocusable = true
                     } else {
-                        floatingActionButton.setImageResource(R.drawable.play_arrow_24px)
+                        viewBinding.linearProgressIndicator.visibility = View.VISIBLE
+                        viewBinding.floatingActionButton.isClickable = false
+                        viewBinding.floatingActionButton.isFocusable = false
                     }
+
+                    floatingActionButton.setImageResource(
+                        when (state) {
+                            KoloMITMService.State.Active -> R.drawable.pause_24px
+                            KoloMITMService.State.Inactive -> R.drawable.play_arrow_24px
+                            KoloMITMService.State.Loading -> R.drawable.pace_24px
+                        }
+                    )
                 }
             }
         }
@@ -63,14 +75,16 @@ class HomeFragment : Fragment() {
 
     private fun toggleKoloMITM() {
         val context = requireContext()
-        if (KoloMITMService.activeFlow.value) {
-            context.startForegroundService(Intent(KoloMITMService.ACTION_STOP).apply {
+        when (KoloMITMService.stateFlow.value) {
+            KoloMITMService.State.Active -> context.startForegroundService(Intent(KoloMITMService.ACTION_STOP).apply {
                 `package` = context.packageName
             })
-        } else {
-            context.startForegroundService(Intent(KoloMITMService.ACTION_START).apply {
+
+            KoloMITMService.State.Inactive -> context.startForegroundService(Intent(KoloMITMService.ACTION_START).apply {
                 `package` = context.packageName
             })
+
+            KoloMITMService.State.Loading -> {}
         }
     }
 
