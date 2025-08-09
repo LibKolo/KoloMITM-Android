@@ -16,4 +16,7 @@
     <string name="confirm">Confirm</string>
     <string name="encounter_an_exception">Encounter an exception: %s</string>
     <string name="account_selected">(Selected)</string>
+    <string name="select">Select</string>
+    <string name="unselect">Unselect</string>
+    <string name="delete">Delete</string>
 </resources>

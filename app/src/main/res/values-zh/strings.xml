@@ -12,4 +12,7 @@
     <string name="confirm">确认</string>
     <string name="encounter_an_exception">遇到一个异常：%s</string>
     <string name="account_selected">(已选择)</string>
+    <string name="select">选择</string>
+    <string name="unselect">取消选择</string>
+    <string name="delete">删除</string>
 </resources>

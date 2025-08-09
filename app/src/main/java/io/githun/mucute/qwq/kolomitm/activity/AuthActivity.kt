@@ -12,6 +12,7 @@ import android.widget.Toast
 import io.githun.mucute.qwq.kolomitm.R
 import io.githun.mucute.qwq.kolomitm.databinding.ActivityAuthBinding
 import io.githun.mucute.qwq.kolomitm.manager.AccountManager
+import io.githun.mucute.qwq.kolomitm.util.DeviceTypeAndroid
 import net.raphimc.minecraftauth.step.msa.StepMsaDeviceCode
 
 class AuthActivity : BaseActivity() {
@@ -69,7 +70,7 @@ class AuthActivity : BaseActivity() {
     }
 
     private fun addAccount() {
-        val deviceType = intent.getIntExtra("deviceType", 0)
+        val deviceType = intent.getStringExtra("deviceType") ?: DeviceTypeAndroid
         AccountManager.addAccount(
             deviceType,
             StepMsaDeviceCode.MsaDeviceCodeCallback {
@@ -78,15 +79,17 @@ class AuthActivity : BaseActivity() {
                 }
             }
         ) { throwable ->
-            throwable?.let {
-                it.printStackTrace()
-                Toast.makeText(
-                    this,
-                    getString(R.string.encounter_an_exception, it.message),
-                    Toast.LENGTH_SHORT
-                )
-                    .show()
-            } ?: finish()
+            runOnUiThread {
+                throwable?.let {
+                    it.printStackTrace()
+                    Toast.makeText(
+                        this,
+                        getString(R.string.encounter_an_exception, it.message),
+                        Toast.LENGTH_SHORT
+                    )
+                        .show()
+                } ?: finish()
+            }
         }
     }
 

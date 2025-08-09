@@ -1,12 +1,10 @@
 package io.githun.mucute.qwq.kolomitm.manager
 
-import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import io.githun.mucute.qwq.kolomitm.application.AppContext
 import io.githun.mucute.qwq.kolomitm.model.Account
-import io.githun.mucute.qwq.kolomitm.util.BedrockAndroidAuth
-import io.githun.mucute.qwq.kolomitm.util.BedrockIosAuth
-import io.githun.mucute.qwq.kolomitm.util.BedrockNintendoAuth
+import io.githun.mucute.qwq.kolomitm.util.createHttpClient
+import io.githun.mucute.qwq.kolomitm.util.fetchBedrockAuthByDeviceType
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
@@ -19,7 +17,6 @@ import kotlinx.coroutines.launch
 import net.raphimc.minecraftauth.MinecraftAuth
 import net.raphimc.minecraftauth.step.msa.StepMsaDeviceCode
 import java.io.File
-import kotlin.collections.emptyList
 
 object AccountManager {
 
@@ -43,7 +40,10 @@ object AccountManager {
             val children = accountsFolder.listFiles() ?: emptyArray()
             for (child in children) {
                 if (child.name.endsWith(".json")) {
-                    accountList.add(parseAccount(child.nameWithoutExtension))
+                    val nameWithoutExtension = child.nameWithoutExtension
+                    val displayName = nameWithoutExtension.substringBefore('_')
+                    val deviceType = nameWithoutExtension.substringAfter('_')
+                    accountList.add(parseAccount(displayName, deviceType))
                 }
             }
 
@@ -51,75 +51,53 @@ object AccountManager {
 
             val selectedAccountFile = File(accountsFolder, "selectedAccount.txt")
             if (selectedAccountFile.exists()) {
-                val displayName = selectedAccountFile.readText()
+                val content = selectedAccountFile.readText()
+                val displayName = content.substringBefore('_')
+                val deviceType = content.substringAfter('_')
                 _selectedAccount.update {
-                    accountList.find { it.session.mcChain.displayName == displayName }
+                    accountList.find { it.session.mcChain.displayName == displayName && it.deviceType == deviceType }
                 }
             }
         }
     }
 
-    private fun parseAccount(displayName: String): Account {
+    private fun parseAccount(displayName: String, deviceType: String): Account {
         val accountsFolder = File(AppContext.instance.filesDir, "accounts")
         accountsFolder.mkdirs()
 
-        val accountFile = File(accountsFolder, "${displayName}.json")
-        val jsonObject = JsonParser.parseString(accountFile.readText()).asJsonObject
-        val deviceType = jsonObject["deviceType"].asInt
-        val stepFullBedrockSession = when (deviceType) {
-            0 -> BedrockAndroidAuth
-            1 -> BedrockIosAuth
-            else -> BedrockNintendoAuth
-        }
+        val accountFile = File(accountsFolder, "${displayName}_${deviceType}.json")
+        val session = fetchBedrockAuthByDeviceType(deviceType).fromJson(JsonParser.parseString(accountFile.readText()).asJsonObject)
 
-        val session = stepFullBedrockSession.fromJson(jsonObject["session"].asJsonObject)
         return Account(
             session,
-            when (deviceType) {
-                0 -> "Android"
-                1 -> "iOS"
-                else -> "Nintendo"
-            }
+            deviceType
         )
     }
 
     fun addAccount(
-        deviceType: Int,
+        deviceType: String,
         msaDeviceCodeCallback: StepMsaDeviceCode.MsaDeviceCodeCallback,
         callback: (Throwable?) -> Unit
     ) {
         coroutineScope.launch(CoroutineExceptionHandler { _, throwable ->
             callback(throwable)
         }) {
-            val stepFullBedrockSession = when (deviceType) {
-                0 -> BedrockAndroidAuth
-                1 -> BedrockIosAuth
-                else -> BedrockNintendoAuth
-            }
+            val stepFullBedrockSession = fetchBedrockAuthByDeviceType(deviceType)
 
             val session = stepFullBedrockSession.getFromInput(
-                MinecraftAuth.createHttpClient(),
+                createHttpClient(),
                 msaDeviceCodeCallback
             )
 
-            val account = Account(
-                session, when (deviceType) {
-                    0 -> "Android"
-                    1 -> "iOS"
-                    else -> "Nintendo"
-                }
-            )
+            val account = Account(session, deviceType)
 
             _accounts.update { it + account }
 
             val accountsFolder = File(AppContext.instance.filesDir, "accounts")
             accountsFolder.mkdirs()
 
-            val accountFile = File(accountsFolder, "${account.session.mcChain.displayName}.json")
-            accountFile.writeText(JsonObject().apply {
-                addProperty("deviceType", deviceType)
-                add("session", stepFullBedrockSession.toJson(account.session))
-            }.toString())
+            val accountFile = File(accountsFolder, "${account.session.mcChain.displayName}_${deviceType}.json")
+            accountFile.writeText(stepFullBedrockSession.toJson(account.session).toString())
 
             callback(null)
         }
@@ -131,18 +109,22 @@ object AccountManager {
                 it.minus(account)
             }
 
+            val accountsFolder = File(AppContext.instance.filesDir, "accounts")
+            accountsFolder.mkdirs()
+
             _selectedAccount.update {
                 if (it != account) {
                     it
                 } else {
+                    val selectedAccountFile = File(accountsFolder, "selectedAccount.txt")
+                    if (selectedAccountFile.exists()) {
+                        selectedAccountFile.delete()
+                    }
                     null
                 }
             }
 
-            val accountsFolder = File(AppContext.instance.filesDir, "accounts")
-            accountsFolder.mkdirs()
-
-            val accountFile = File(accountsFolder, "${account.session.mcChain.displayName}.json}")
+            val accountFile = File(accountsFolder, "${account.session.mcChain.displayName}_${account.deviceType}.json")
             accountFile.delete()
         }
     }
@@ -157,9 +139,21 @@ object AccountManager {
 
         val selectedAccountFile = File(accountsFolder, "selectedAccount.txt")
         if (account != null) {
-            selectedAccountFile.writeText(account.session.mcChain.displayName)
-        } else {
+            selectedAccountFile.writeText("${account.session.mcChain.displayName}_${account.deviceType}")
+        } else if (selectedAccountFile.exists()) {
             selectedAccountFile.delete()
+        }
+    }
+
+    fun saveAccount(account: Account) {
+        coroutineScope.launch {
+            val stepFullBedrockSession = fetchBedrockAuthByDeviceType(account.deviceType)
+
+            val accountsFolder = File(AppContext.instance.filesDir, "accounts")
+            accountsFolder.mkdirs()
+
+            val accountFile = File(accountsFolder, "${account.session.mcChain.displayName}_${account.deviceType}.json")
+            accountFile.writeText(stepFullBedrockSession.toJson(account.session).toString())
         }
     }
 

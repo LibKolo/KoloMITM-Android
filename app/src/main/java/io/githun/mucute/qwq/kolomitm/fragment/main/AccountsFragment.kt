@@ -28,6 +28,12 @@ import io.githun.mucute.qwq.kolomitm.activity.AuthActivity
 import io.githun.mucute.qwq.kolomitm.adapter.AccountAdapter
 import io.githun.mucute.qwq.kolomitm.databinding.FragmentAccountsBinding
 import io.githun.mucute.qwq.kolomitm.manager.AccountManager
+import io.githun.mucute.qwq.kolomitm.util.BedrockAndroidAuth
+import io.githun.mucute.qwq.kolomitm.util.BedrockIosAuth
+import io.githun.mucute.qwq.kolomitm.util.BedrockNintendoAuth
+import io.githun.mucute.qwq.kolomitm.util.DeviceTypeAndroid
+import io.githun.mucute.qwq.kolomitm.util.DeviceTypeIos
+import io.githun.mucute.qwq.kolomitm.util.DeviceTypeNintendo
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -61,7 +67,7 @@ class AccountsFragment : Fragment() {
                 AccountManager.accounts
                     .onEach { afterAccounts ->
                         val beforeAccounts = adapter.accounts
-                        val differ = afterAccounts.minus(beforeAccounts)
+                        val differ = if (afterAccounts.size > beforeAccounts.size) afterAccounts.minus(beforeAccounts) else beforeAccounts.minus(afterAccounts)
                         if (differ.isEmpty()) {
                             return@onEach
                         }
@@ -119,7 +125,11 @@ class AccountsFragment : Fragment() {
             }
             .setPositiveButton(R.string.confirm) { _, _ ->
                 startActivity(Intent(requireContext(), AuthActivity::class.java).apply {
-                    putExtra("deviceType", deviceType)
+                    putExtra("deviceType", when (deviceType) {
+                        0 -> DeviceTypeAndroid
+                        1 -> DeviceTypeIos
+                        else -> DeviceTypeNintendo
+                    })
                 })
             }
             .show()

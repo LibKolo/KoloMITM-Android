@@ -23,9 +23,8 @@ import io.githun.mucute.qwq.kolomitm.R
 import io.githun.mucute.qwq.kolomitm.activity.MainActivity
 import io.githun.mucute.qwq.kolomitm.manager.AccountManager
 import io.githun.mucute.qwq.kolomitm.model.Account
-import io.githun.mucute.qwq.kolomitm.util.BedrockAndroidAuth
-import io.githun.mucute.qwq.kolomitm.util.BedrockIosAuth
-import io.githun.mucute.qwq.kolomitm.util.BedrockNintendoAuth
+import io.githun.mucute.qwq.kolomitm.util.createHttpClient
+import io.githun.mucute.qwq.kolomitm.util.fetchBedrockAuthByDeviceType
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
@@ -35,7 +34,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import net.raphimc.minecraftauth.MinecraftAuth
 
 class KoloMITMService : Service() {
 
@@ -142,18 +140,27 @@ class KoloMITMService : Service() {
             _stateFlow.update { State.Loading }
 
             Definitions.loadBlockPalette()
-            koloMITM = KoloMITM().apply {
-                account = AccountManager.selectedAccount.value?.let {
-                    if (it.session.isExpired) {
-                        when (it.deviceType) {
-                            Account.Android -> BedrockAndroidAuth
-                            Account.iOS -> BedrockIosAuth
-                            else -> BedrockNintendoAuth
-                        }.refresh(MinecraftAuth.createHttpClient(), it.session)
-                    } else {
-                        it.session
-                    }
+
+            val newAccount = AccountManager.selectedAccount.value?.let {
+                if (it.session.isExpired) {
+                    Account(
+                        session = fetchBedrockAuthByDeviceType(it.deviceType).refresh(
+                            createHttpClient(), it.session
+                        ),
+                        deviceType = it.deviceType
+                    )
+                } else {
+                    it
                 }
+            }
+
+            if (newAccount != null) {
+                AccountManager.saveAccount(newAccount)
+            }
+
+            koloMITM = KoloMITM().apply {
+                account = newAccount?.session
+                // remoteAddress = InetSocketAddress("play.lbsg.net", 19132)
                 koloSession.apply {
                     proxyPassReceiver()
                     definitionReceiver()
@@ -179,10 +186,7 @@ class KoloMITMService : Service() {
 
             _stateFlow.update { State.Loading }
 
-            koloMITM?.let {
-                it.serverChannel?.close()?.syncUninterruptibly()
-                it.clientChannel?.close()?.syncUninterruptibly()
-            }
+            koloMITM?.disconnect()
             koloMITM = null
             _stateFlow.update { State.Inactive }
         }
