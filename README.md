@@ -7,7 +7,7 @@ KoloMITM-Android is a implementation of KoloMITM, which supports Android platfor
 ### Build & Running
 To build this project, you need to clone and build KoloMITM initially.
 
-#### 1.Clone KoloMITM
+#### 1. Clone KoloMITM
 
 KoloMITM uses Git submodules, to clone:
 
@@ -16,7 +16,7 @@ KoloMITM uses Git submodules, to clone:
 git clone https://github.com/LibKolo/KoloMITM.git --recursive
 ```
 
-#### 2.Build and publish KoloMITM
+#### 2. Build and publish KoloMITM
 
 To Build KoloMITM:
 
@@ -28,14 +28,14 @@ cd KoloMITM
 ./gradlew publishMavenPublicationToMavenLocal
 ```
 
-#### 3.Clone KoloMITM-Android
+#### 3. Clone KoloMITM-Android
 
 ```shell
 # Clone KoloMITM-Android
 git clone https://github.com/LibKolo/KoloMITM-Android.git
 ```
 
-#### 4.Build KoloMITM-Android
+#### 4. Build KoloMITM-Android
 
 To Build Debug APK:
 
