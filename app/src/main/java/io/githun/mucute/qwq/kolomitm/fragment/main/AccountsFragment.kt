@@ -1,43 +1,26 @@
 package io.githun.mucute.qwq.kolomitm.fragment.main
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
-import android.webkit.WebChromeClient
-import android.webkit.WebResourceRequest
-import android.webkit.WebSettings
-import android.webkit.WebView
-import android.webkit.WebViewClient
-import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.divider.MaterialDividerItemDecoration
-import com.google.android.material.progressindicator.LinearProgressIndicator
 import io.githun.mucute.qwq.kolomitm.R
 import io.githun.mucute.qwq.kolomitm.activity.AuthActivity
 import io.githun.mucute.qwq.kolomitm.adapter.AccountAdapter
 import io.githun.mucute.qwq.kolomitm.databinding.FragmentAccountsBinding
 import io.githun.mucute.qwq.kolomitm.manager.AccountManager
-import io.githun.mucute.qwq.kolomitm.util.BedrockAndroidAuth
-import io.githun.mucute.qwq.kolomitm.util.BedrockIosAuth
-import io.githun.mucute.qwq.kolomitm.util.BedrockNintendoAuth
 import io.githun.mucute.qwq.kolomitm.util.DeviceTypeAndroid
 import io.githun.mucute.qwq.kolomitm.util.DeviceTypeIos
 import io.githun.mucute.qwq.kolomitm.util.DeviceTypeNintendo
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import net.raphimc.minecraftauth.step.msa.StepMsaDeviceCode
 
 class AccountsFragment : Fragment() {
 
@@ -116,7 +99,7 @@ class AccountsFragment : Fragment() {
         var deviceType = 0
 
         MaterialAlertDialogBuilder(requireContext())
-            .setTitle(R.string.device_type)
+            .setTitle(R.string.login_as)
             .setSingleChoiceItems(
                 R.array.device_types,
                 0

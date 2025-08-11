@@ -1,6 +1,7 @@
 package io.githun.mucute.qwq.kolomitm.application
 
 import android.app.Application
+import com.google.android.material.color.DynamicColors
 import io.githun.mucute.qwq.kolomitm.manager.AccountManager
 
 class AppContext : Application() {
@@ -17,6 +18,7 @@ class AppContext : Application() {
         instance = this
 
         AccountManager.fetchAccounts()
+        DynamicColors.applyToActivitiesIfAvailable(this)
     }
 
 }

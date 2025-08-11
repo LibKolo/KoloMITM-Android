@@ -39,6 +39,8 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewBinding.appVersions.text = fetchAppVersions()
+
         val floatingActionButton = viewBinding.floatingActionButton
         floatingActionButton.setOnClickListener {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -71,6 +73,19 @@ class HomeFragment : Fragment() {
                 }
             }
         }
+    }
+
+    @Suppress("DEPRECATION")
+    private fun fetchAppVersions(): String {
+        val context = requireContext()
+        val packageInfo = context.packageManager.getPackageInfo(context.packageName, 0)
+        val versionName = packageInfo.versionName
+        val versionCode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            packageInfo.longVersionCode
+        } else {
+            packageInfo.versionCode
+        }
+        return "$versionName (${versionCode})"
     }
 
     private fun toggleKoloMITM() {
