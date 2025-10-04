@@ -30,7 +30,7 @@ jobs:
         cache: gradle
 
     - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@v4
+      uses: gradle/actions/setup-gradle@v5
 
     - name: Publish KoloMITM to Maven Local
       run: cd KoloMITM && chmod +x gradlew && ./gradlew publishMavenPublicationToMavenLocal && cd ..
