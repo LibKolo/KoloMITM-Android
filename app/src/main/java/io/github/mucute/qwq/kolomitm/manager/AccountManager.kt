@@ -1,10 +1,10 @@
-package io.githun.mucute.qwq.kolomitm.manager
+package io.github.mucute.qwq.kolomitm.manager
 
 import com.google.gson.JsonParser
-import io.githun.mucute.qwq.kolomitm.application.AppContext
-import io.githun.mucute.qwq.kolomitm.model.Account
-import io.githun.mucute.qwq.kolomitm.util.createHttpClient
-import io.githun.mucute.qwq.kolomitm.util.fetchBedrockAuthByDeviceType
+import io.github.mucute.qwq.kolomitm.application.AppContext
+import io.github.mucute.qwq.kolomitm.model.Account
+import io.github.mucute.qwq.kolomitm.util.createHttpClient
+import io.github.mucute.qwq.kolomitm.util.fetchBedrockAuthByDeviceType
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import net.raphimc.minecraftauth.MinecraftAuth
 import net.raphimc.minecraftauth.step.msa.StepMsaDeviceCode
 import java.io.File
 

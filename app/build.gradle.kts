@@ -4,10 +4,10 @@ plugins {
 }
 
 android {
-    namespace = "io.githun.mucute.qwq.kolomitm"
+    namespace = "io.github.mucute.qwq.kolomitm"
 
     defaultConfig {
-        applicationId = "io.githun.mucute.qwq.kolomitm"
+        applicationId = "io.github.mucute.qwq.kolomitm"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

@@ -1,4 +1,4 @@
-package io.githun.mucute.qwq.kolomitm.model
+package io.github.mucute.qwq.kolomitm.model
 
 import net.raphimc.minecraftauth.step.bedrock.session.StepFullBedrockSession
 

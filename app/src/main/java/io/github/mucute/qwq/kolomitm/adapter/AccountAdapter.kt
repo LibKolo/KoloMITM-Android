@@ -1,4 +1,4 @@
-package io.githun.mucute.qwq.kolomitm.adapter
+package io.github.mucute.qwq.kolomitm.adapter
 
 import android.content.Context
 import android.view.Gravity
@@ -7,10 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.RecyclerView
-import io.githun.mucute.qwq.kolomitm.R
-import io.githun.mucute.qwq.kolomitm.databinding.LayoutAccountItemBinding
-import io.githun.mucute.qwq.kolomitm.manager.AccountManager
-import io.githun.mucute.qwq.kolomitm.model.Account
+import io.github.mucute.qwq.kolomitm.R
+import io.github.mucute.qwq.kolomitm.databinding.LayoutAccountItemBinding
+import io.github.mucute.qwq.kolomitm.manager.AccountManager
+import io.github.mucute.qwq.kolomitm.model.Account
 
 class AccountAdapter(
     val context: Context,

@@ -1,4 +1,4 @@
-package io.githun.mucute.qwq.kolomitm.fragment.main
+package io.github.mucute.qwq.kolomitm.fragment.main
 
 import android.content.Intent
 import android.os.Bundle
@@ -10,14 +10,14 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import io.githun.mucute.qwq.kolomitm.R
-import io.githun.mucute.qwq.kolomitm.activity.AuthActivity
-import io.githun.mucute.qwq.kolomitm.adapter.AccountAdapter
-import io.githun.mucute.qwq.kolomitm.databinding.FragmentAccountsBinding
-import io.githun.mucute.qwq.kolomitm.manager.AccountManager
-import io.githun.mucute.qwq.kolomitm.util.DeviceTypeAndroid
-import io.githun.mucute.qwq.kolomitm.util.DeviceTypeIos
-import io.githun.mucute.qwq.kolomitm.util.DeviceTypeNintendo
+import io.github.mucute.qwq.kolomitm.R
+import io.github.mucute.qwq.kolomitm.activity.AuthActivity
+import io.github.mucute.qwq.kolomitm.adapter.AccountAdapter
+import io.github.mucute.qwq.kolomitm.databinding.FragmentAccountsBinding
+import io.github.mucute.qwq.kolomitm.manager.AccountManager
+import io.github.mucute.qwq.kolomitm.util.DeviceTypeAndroid
+import io.github.mucute.qwq.kolomitm.util.DeviceTypeIos
+import io.github.mucute.qwq.kolomitm.util.DeviceTypeNintendo
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch

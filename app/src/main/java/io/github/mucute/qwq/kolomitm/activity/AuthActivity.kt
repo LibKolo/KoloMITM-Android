@@ -1,4 +1,4 @@
-package io.githun.mucute.qwq.kolomitm.activity
+package io.github.mucute.qwq.kolomitm.activity
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -9,10 +9,11 @@ import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
-import io.githun.mucute.qwq.kolomitm.R
-import io.githun.mucute.qwq.kolomitm.databinding.ActivityAuthBinding
-import io.githun.mucute.qwq.kolomitm.manager.AccountManager
-import io.githun.mucute.qwq.kolomitm.util.DeviceTypeAndroid
+import io.github.mucute.qwq.kolomitm.R
+import io.github.mucute.qwq.kolomitm.databinding.ActivityAuthBinding
+import io.github.mucute.qwq.kolomitm.manager.AccountManager
+import io.github.mucute.qwq.kolomitm.util.DeviceTypeAndroid
+import io.github.mucute.qwq.kolomitm.activity.BaseActivity
 import net.raphimc.minecraftauth.step.msa.StepMsaDeviceCode
 
 class AuthActivity : BaseActivity() {

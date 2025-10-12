@@ -1,4 +1,4 @@
-package io.githun.mucute.qwq.kolomitm.service
+package io.github.mucute.qwq.kolomitm.service
 
 import android.annotation.SuppressLint
 import android.app.Notification
@@ -13,18 +13,18 @@ import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import io.github.mucute.qwq.kolomitm.KoloMITM
+import io.github.mucute.qwq.kolomitm.R
 import io.github.mucute.qwq.kolomitm.definition.Definitions
 import io.github.mucute.qwq.kolomitm.event.receiver.definitionReceiver
 import io.github.mucute.qwq.kolomitm.event.receiver.echoCommandReceiver
 import io.github.mucute.qwq.kolomitm.event.receiver.proxyPassReceiver
 import io.github.mucute.qwq.kolomitm.event.receiver.transferCommandReceiver
 import io.github.mucute.qwq.kolomitm.event.receiver.transferReceiver
-import io.githun.mucute.qwq.kolomitm.R
-import io.githun.mucute.qwq.kolomitm.activity.MainActivity
-import io.githun.mucute.qwq.kolomitm.manager.AccountManager
-import io.githun.mucute.qwq.kolomitm.model.Account
-import io.githun.mucute.qwq.kolomitm.util.createHttpClient
-import io.githun.mucute.qwq.kolomitm.util.fetchBedrockAuthByDeviceType
+import io.github.mucute.qwq.kolomitm.activity.MainActivity
+import io.github.mucute.qwq.kolomitm.manager.AccountManager
+import io.github.mucute.qwq.kolomitm.model.Account
+import io.github.mucute.qwq.kolomitm.util.createHttpClient
+import io.github.mucute.qwq.kolomitm.util.fetchBedrockAuthByDeviceType
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope

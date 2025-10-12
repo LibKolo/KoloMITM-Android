@@ -1,8 +1,8 @@
-package io.githun.mucute.qwq.kolomitm.application
+package io.github.mucute.qwq.kolomitm.application
 
 import android.app.Application
 import com.google.android.material.color.DynamicColors
-import io.githun.mucute.qwq.kolomitm.manager.AccountManager
+import io.github.mucute.qwq.kolomitm.manager.AccountManager
 
 class AppContext : Application() {
 

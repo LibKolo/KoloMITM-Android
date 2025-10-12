@@ -1,14 +1,15 @@
-package io.githun.mucute.qwq.kolomitm.activity
+package io.github.mucute.qwq.kolomitm.activity
 
 import android.os.Bundle
 import androidx.viewpager2.widget.ViewPager2
-import io.githun.mucute.qwq.kolomitm.R
-import io.githun.mucute.qwq.kolomitm.adapter.ViewPager2Adapter
-import io.githun.mucute.qwq.kolomitm.databinding.ActivityMainBinding
-import io.githun.mucute.qwq.kolomitm.fragment.main.AccountsFragment
-import io.githun.mucute.qwq.kolomitm.fragment.main.ExtensionsFragment
-import io.githun.mucute.qwq.kolomitm.fragment.main.HomeFragment
-import io.githun.mucute.qwq.kolomitm.fragment.main.SettingsFragment
+import io.github.mucute.qwq.kolomitm.R
+import io.github.mucute.qwq.kolomitm.activity.BaseActivity
+import io.github.mucute.qwq.kolomitm.adapter.ViewPager2Adapter
+import io.github.mucute.qwq.kolomitm.databinding.ActivityMainBinding
+import io.github.mucute.qwq.kolomitm.fragment.main.AccountsFragment
+import io.github.mucute.qwq.kolomitm.fragment.main.ExtensionsFragment
+import io.github.mucute.qwq.kolomitm.fragment.main.HomeFragment
+import io.github.mucute.qwq.kolomitm.fragment.main.SettingsFragment
 
 class MainActivity : BaseActivity() {
 

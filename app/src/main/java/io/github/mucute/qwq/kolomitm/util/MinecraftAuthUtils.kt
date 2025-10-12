@@ -1,4 +1,4 @@
-package io.githun.mucute.qwq.kolomitm.util
+package io.github.mucute.qwq.kolomitm.util
 
 import net.lenni0451.commons.httpclient.HttpClient
 import net.lenni0451.commons.httpclient.RetryHandler
@@ -7,7 +7,6 @@ import net.lenni0451.commons.httpclient.constants.Headers
 import net.raphimc.minecraftauth.MinecraftAuth
 import net.raphimc.minecraftauth.step.bedrock.session.StepFullBedrockSession
 import net.raphimc.minecraftauth.util.MicrosoftConstants
-import net.raphimc.minecraftauth.util.OAuthEnvironment
 
 const val DeviceTypeAndroid = "Android"
 val BedrockAndroidAuth = createBedrockAuth(MicrosoftConstants.BEDROCK_ANDROID_TITLE_ID, DeviceTypeAndroid)

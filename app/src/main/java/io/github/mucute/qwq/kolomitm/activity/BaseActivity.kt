@@ -1,4 +1,4 @@
-package io.githun.mucute.qwq.kolomitm.activity
+package io.github.mucute.qwq.kolomitm.activity
 
 import android.os.Bundle
 import android.view.View

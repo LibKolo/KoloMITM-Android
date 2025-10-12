@@ -1,4 +1,4 @@
-package io.githun.mucute.qwq.kolomitm.adapter
+package io.github.mucute.qwq.kolomitm.adapter
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity

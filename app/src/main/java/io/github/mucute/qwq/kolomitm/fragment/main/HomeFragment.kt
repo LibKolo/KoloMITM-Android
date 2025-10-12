@@ -1,4 +1,4 @@
-package io.githun.mucute.qwq.kolomitm.fragment.main
+package io.github.mucute.qwq.kolomitm.fragment.main
 
 import android.Manifest
 import android.content.Intent
@@ -12,9 +12,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import io.githun.mucute.qwq.kolomitm.R
-import io.githun.mucute.qwq.kolomitm.databinding.FragmentHomeBinding
-import io.githun.mucute.qwq.kolomitm.service.KoloMITMService
+import io.github.mucute.qwq.kolomitm.R
+import io.github.mucute.qwq.kolomitm.databinding.FragmentHomeBinding
+import io.github.mucute.qwq.kolomitm.service.KoloMITMService
 import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment() {
