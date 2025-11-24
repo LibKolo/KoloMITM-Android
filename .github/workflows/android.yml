@@ -12,11 +12,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
       with: 
         submodules: 'recursive'
 
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
       with:
         repository: mucute-qwq/KoloMITM
         path: ./KoloMITM
